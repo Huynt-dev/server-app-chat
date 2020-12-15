@@ -13,7 +13,10 @@ const usersSchema = new mongoose.Schema({
 
   gender: String,
 
-  avatar: String,
+  avatar: {
+    type: String,
+    default: "https://robohash.org/temporibusonisadipisci.png?size=300x300",
+  },
 });
 
 const users = mongoose.model("users", usersSchema);
