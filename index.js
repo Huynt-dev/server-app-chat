@@ -32,23 +32,24 @@ io.on("connection", (client) => {
 
   client.on("data-chat", function (data) {
     console.log(client.id + "chat:" + data);
+    io.sockets.emit("data-chat-user", data);
     // luu vao db user nao => mesage nao => room nao
     // messages: user, message, room
   });
 });
 
-io.use(async (socket, next) => {
-  if (socket.handshake.headers && socket.handshake.headers.authorization) {
-    const token = await jwt.verify(
-      socket.handshake.headers.authorization,
-      process.env.JWT_KEY
-    );
+// io.use(async (socket, next) => {
+//   if (socket.handshake.headers && socket.handshake.headers.authorization) {
+//     const token = await jwt.verify(
+//       socket.handshake.headers.authorization,
+//       process.env.JWT_KEY
+//     );
 
-    console.log(token);
-  } else {
-    next(new Error("Authentication error"));
-  }
-});
+//     console.log(token);
+//   } else {
+//     next(new Error("Authentication error"));
+//   }
+// });
 
 app.get("/", function (req, res) {
   res.send("Hello World!");
