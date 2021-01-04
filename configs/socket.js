@@ -13,15 +13,17 @@ const connect = (io) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("new connection: ", socket.id);
-
+    // console.log("new connection: ", socket.id);
+    console.log("---------------------");
+    socket.join("xxx");
+    console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {
       console.log(socket.user._id, " disconnected");
     });
 
     socket.on("NEW-MESSAGE", (chat) => {
       console.log(socket.id, chat);
-      socket.emit("NEW-MESSAGE", chat);
+      io.sockets.in("xxx").emit("NEW-MESSAGE", chat);
     });
 
     // .emit("tokenSuccess", { msg: "Token success!!" });
