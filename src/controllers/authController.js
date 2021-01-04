@@ -6,7 +6,7 @@ module.exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await users.findOne({ email }).lean();
-
+    // console.log(user);
     if (!user) {
       return res.status(401).json({ error: "Email is invalid" });
     }
@@ -22,9 +22,8 @@ module.exports.login = async (req, res) => {
       _id: user._id,
       name: user.name,
     };
-
-    const token = await jwt.sign(dataSign, process.env.JWT_KEY);
     delete user.password;
+    const token = await jwt.sign(dataSign, process.env.JWT_KEY);
 
     res.status(200).json({ token, user });
   } catch (error) {

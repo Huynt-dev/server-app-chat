@@ -15,11 +15,16 @@ const connect = (io) => {
   io.on("connection", (socket) => {
     console.log("new connection: ", socket.id);
 
-    socket
-      .on("disconnect", () => {
-        console.log(socket.user._id, " disconnected");
-      })
-      .emit("hello", { msg: "Hello world!!" });
+    socket.on("disconnect", () => {
+      console.log(socket.user._id, " disconnected");
+    });
+
+    socket.on("NEW-MESSAGE", (chat) => {
+      console.log(socket.id, chat);
+      socket.emit("NEW-MESSAGE", chat);
+    });
+
+    // .emit("tokenSuccess", { msg: "Token success!!" });
   });
 };
 
