@@ -13,8 +13,8 @@ const connect = (io) => {
   });
 
   io.on("connection", (socket) => {
-    // console.log("new connection: ", socket.id);
     console.log("---------------------");
+    console.log("new connection: ", socket.user._id);
     socket.join("xxx");
     console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {
