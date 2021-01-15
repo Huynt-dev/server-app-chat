@@ -14,16 +14,24 @@ const connect = (io) => {
 
   io.on("connection", (socket) => {
     console.log("---------------------");
-    console.log("new connection: ", socket.user._id);
-    socket.join("xxx");
-    console.log(socket.adapter.rooms);
-    socket.on("disconnect", () => {
-      console.log(socket.user._id, " disconnected");
+    socket.emit("userBecomeOnline", socket.user._id);
+    // console.log("new connection: ", socket.user._id);
+    socket.on("auth", async (token) => {
+      const { user } = await jwt.verify(token);
+      socket.join(user);
+      socket.currentUserId = user;
     });
 
-    socket.on("NEW-MESSAGE", (chat) => {
-      console.log(socket.id, chat);
-      io.sockets.in("xxx").emit("NEW-MESSAGE", chat);
+    socket.on("sendMessage", ({ toUserId, message }) => {
+      io.to(toUserId)
+        .to(socket.currentUserId)
+        .emit("newMessage", { fromUserId: socket.currentUserId, message });
+    });
+
+    console.log(socket.adapter.rooms);
+    socket.on("disconnect", () => {
+      // console.log(socket.user._id, " disconnected");
+      socket.emit("userBecomeOffline", socket.user._id);
     });
 
     // .emit("tokenSuccess", { msg: "Token success!!" });
