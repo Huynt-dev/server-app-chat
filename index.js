@@ -17,6 +17,8 @@ const io = require("socket.io")(server, {
 
 const usersRouter = require("./src/routers/usersRouter");
 const routerAuth = require("./src/routers/authRouter");
+const messageRouter = require("./src/routers/messageRouter");
+const roomRouter = require("./src/routers/roomRouter");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,6 +39,8 @@ app.get("/", function (req, res) {
 
 app.use("/auth", routerAuth);
 app.use("/users", usersRouter);
+app.use("/messages", messageRouter);
+app.use("/room", roomRouter);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");

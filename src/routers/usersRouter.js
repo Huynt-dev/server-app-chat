@@ -5,4 +5,6 @@ const isAuth = require("../middleware/isAuth");
 
 users.get("/", isAuth, userController.users);
 
+users.get("/:idUser", isAuth, userController.findUserInRoom);
+
 module.exports = users;

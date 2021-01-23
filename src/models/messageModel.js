@@ -1,14 +1,27 @@
 const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Types.ObjectId,
-    ref: "users",
+const messagesSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    room: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room",
+    },
+    expire_at: { type: Date, default: Date.now, expires: 3600 },
   },
 
-  message: String,
-});
+  {
+    timestamps: true,
+  }
+);
 
-const message = mongoose.model("message", messageSchema);
+const messages = mongoose.model("Messages", messagesSchema);
 
-module.exports = message;
+module.exports = messages;
