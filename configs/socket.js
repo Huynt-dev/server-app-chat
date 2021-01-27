@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const messageModel = require("../src/models/messageModel");
 const roomModel = require("../src/models/roomModel");
+const usersModel = require("../src/models/usersModel");
 const connect = (io) => {
   io.use(async (socket, next) => {
     try {
@@ -17,8 +18,11 @@ const connect = (io) => {
   io.on("connection", (socket) => {
     console.log("---------------------");
     // socket.emit("userBecomeOnline", socket.user._id);
-    // console.log("new connection: ", socket.user._id);
-
+    console.log("new connection: ", socket.id);
+    const isOnline = usersModel.findOneAndUpdate(
+      { _id: socket.user._id },
+      { isOnline: true }
+    );
     // socket.on("auth", async (token) => {
     //   const user = await jwt.verify(token, process.env.JWT_KEY);
     //   socket.join(user._id);
@@ -42,15 +46,15 @@ const connect = (io) => {
           lastMessage: data.message,
         }
       );
-
-      console.log(lastMessage);
       io.emit("newMessage", message);
     });
 
-    console.log(socket.adapter.rooms);
+    // console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {
-      // console.log(socket.user._id, " disconnected");
-      // socket.emit("userBecomeOffline", socket.user._id);
+      const isoffline = usersModel.findOneAndUpdate(
+        { _id: socket.user._id },
+        { isOnline: false }
+      );
     });
 
     // .emit("tokenSuccess", { msg: "Token success!!" });

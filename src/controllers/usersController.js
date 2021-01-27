@@ -8,7 +8,7 @@ module.exports.users = async function (req, res) {
         $ne: req.user._id,
       },
     })
-    .select("name avatar email");
+    .select("name avatar email isOnline");
   res.status(200).json({ dataUsers });
 };
 
