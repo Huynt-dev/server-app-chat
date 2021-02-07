@@ -27,6 +27,7 @@ module.exports.findUserInRoom = async function (req, res) {
         toUser: idUser,
       });
     }
+    console.log(room);
     // console.log(req.user._id);
 
     res.status(200).json({ room });

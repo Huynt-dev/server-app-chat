@@ -45,6 +45,6 @@ app.use("/search", routerSearch);
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");
   server.listen(process.env.PORT, () => {
-    console.log("Server is running");
+    console.log("Server is running port " + process.env.PORT);
   });
 });

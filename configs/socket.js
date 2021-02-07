@@ -31,6 +31,12 @@ const connect = (io) => {
 
     // .to(toUserId)
     // .to(socket.currentUserId)
+
+    // socket.on("Join-room", (idRoom) => {
+    // socket.leave(!idRoom);
+    // socket.join(idRoom);
+    // console.log(socket.adapter.rooms);
+
     socket.on("sendMessage", async (data) => {
       console.log(data);
       const message = await messageModel.create(data);
@@ -40,14 +46,17 @@ const connect = (io) => {
           select: "name",
         })
         .execPopulate();
-      const lastMessage = await roomModel.findOneAndUpdate(
+      await roomModel.findOneAndUpdate(
         { _id: data.room },
         {
           lastMessage: data.message,
         }
       );
-      io.emit("newMessage", message);
+      // socket.to(idRoom).emit("newMessage", message);
+      // io.sockets.in(idRoom).emit("updateMessage", message);
+      io.emit("updateMessage", message);
     });
+    // });
 
     // console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {

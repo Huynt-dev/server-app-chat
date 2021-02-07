@@ -6,7 +6,7 @@ const roomsSchema = new mongoose.Schema(
 
     toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
-    lastMessage: { type: String, required: true },
+    lastMessage: { type: String },
   },
   {
     timestamps: true,
