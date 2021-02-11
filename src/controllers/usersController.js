@@ -24,7 +24,8 @@ module.exports.findUserInRoom = async function (req, res) {
     if (room == null) {
       room = await roomModel.create({
         users: [idUser, req.user._id],
-        toUser: idUser,
+        lastMessage: "",
+        // toUser: idUser,
       });
     }
     console.log(room);

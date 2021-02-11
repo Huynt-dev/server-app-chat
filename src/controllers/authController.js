@@ -53,6 +53,7 @@ module.exports.register = async (req, res) => {
       email: email,
       gender: gender,
       password: hashPassword,
+      isOnline: false,
     });
 
     res.status(200).json({ user: "ok" });

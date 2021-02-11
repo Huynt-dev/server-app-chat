@@ -8,10 +8,10 @@ const connect = (io) => {
       const token = socket.handshake.query.token;
       const payload = await jwt.verify(token, process.env.JWT_KEY);
       socket.user = payload;
-      console.log(socket.user);
+      console.log("socket.user", socket.user);
       next();
     } catch (e) {
-      console.log({ socketError: e });
+      console.log("token error");
     }
   });
 
@@ -54,12 +54,13 @@ const connect = (io) => {
       );
       // socket.to(idRoom).emit("newMessage", message);
       // io.sockets.in(idRoom).emit("updateMessage", message);
-      io.emit("updateMessage", message);
+      io.emit("updateMessage", { message, idRoom: data.room });
     });
     // });
 
     // console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {
+      console.log("user disconnect ", socket.id);
       const isoffline = usersModel.findOneAndUpdate(
         { _id: socket.user._id },
         { isOnline: false }
