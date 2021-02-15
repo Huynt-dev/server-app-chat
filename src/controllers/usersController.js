@@ -24,12 +24,10 @@ module.exports.findUserInRoom = async function (req, res) {
     if (room == null) {
       room = await roomModel.create({
         users: [idUser, req.user._id],
-        lastMessage: "",
-        // toUser: idUser,
+        who: "aaa",
+        lastMessage: "aaa",
       });
     }
-    console.log(room);
-    // console.log(req.user._id);
 
     res.status(200).json({ room });
   } catch (error) {

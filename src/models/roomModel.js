@@ -3,9 +3,7 @@ const mongoose = require("mongoose");
 const roomsSchema = new mongoose.Schema(
   {
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // just 2 elements
-
-    // toUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
+    who: { type: String },
     lastMessage: { type: String },
   },
   {

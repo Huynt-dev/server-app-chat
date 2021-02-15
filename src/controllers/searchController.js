@@ -1,5 +1,6 @@
 const usersModel = require("../models/usersModel");
 const roomModel = require("../models/roomModel");
+
 module.exports.searchUser = async function (req, res) {
   try {
     const { q } = req.query;
@@ -21,19 +22,16 @@ module.exports.searchUser = async function (req, res) {
 module.exports.searchRoom = async function (req, res) {
   try {
     const { r } = req.query;
-    const room = await roomModel
-      .find({ users: req.user._id })
-      .populate({ path: "users", select: "name avatar" });
-
-    const data = room.filter((x) => {
-      return x.users.name;
+    console.log(r);
+    const room = await roomModel.find({ users: req.user._id }).populate({
+      path: "users",
+      match: { name: { $regex: r } },
+      select: "name avatar",
     });
-    console.log(data);
+
+    console.log(room);
     res.status(200).json({ room });
   } catch (error) {
     console.log(error);
   }
 };
-// .filter((x) =>
-//       x.name.toLowerCase().includes(q)
-//     );

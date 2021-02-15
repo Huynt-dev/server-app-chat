@@ -5,5 +5,5 @@ const isAuth = require("../middleware/isAuth");
 
 search.get("/", isAuth, searchController.searchUser);
 
-// search.get("/", isAuth, searchController.searchRoom);
+search.get("/room", isAuth, searchController.searchRoom);
 module.exports = search;

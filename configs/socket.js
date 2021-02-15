@@ -46,12 +46,21 @@ const connect = (io) => {
           select: "name",
         })
         .execPopulate();
-      await roomModel.findOneAndUpdate(
+
+      await roomModel.updateMany(
+        // console.log(data.message),
         { _id: data.room },
-        {
-          lastMessage: data.message,
-        }
+        { $set: { who: message.user.name, lastMessage: data.message } },
+        { upsert: true }
       );
+
+      // await roomModel.findAndModify({
+      //   query: { _id: data.room },
+      //   update: { $set: { who: message.user.name, lastMessage: data.message } },
+      //   new: true,
+      //   upsert: true,
+      // });
+
       // socket.to(idRoom).emit("newMessage", message);
       // io.sockets.in(idRoom).emit("updateMessage", message);
       io.emit("updateMessage", { message, idRoom: data.room });
