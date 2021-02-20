@@ -9,6 +9,7 @@ const connect = (io) => {
       const payload = await jwt.verify(token, process.env.JWT_KEY);
       socket.user = payload;
       console.log("socket.user", socket.user);
+      socket.join(socket.user._id);
       next();
     } catch (e) {
       console.log("token error");
@@ -17,6 +18,7 @@ const connect = (io) => {
 
   io.on("connection", (socket) => {
     console.log("---------------------");
+
     // socket.emit("userBecomeOnline", socket.user._id);
     console.log("new connection: ", socket.id);
     const isOnline = usersModel.findOneAndUpdate(
@@ -33,9 +35,9 @@ const connect = (io) => {
     // .to(socket.currentUserId)
 
     // socket.on("Join-room", (idRoom) => {
-    // socket.leave(!idRoom);
-    // socket.join(idRoom);
-    // console.log(socket.adapter.rooms);
+    //   // socket.leave(!idRoom);
+    //   socket.join(idRoom);
+    //   console.log(socket.adapter.rooms);
 
     socket.on("sendMessage", async (data) => {
       console.log(data);
@@ -60,14 +62,18 @@ const connect = (io) => {
       //   new: true,
       //   upsert: true,
       // });
+      console.log("alo", message.socketId);
+      // socket.join(message.user._id);
+      io.to().emit("newMessage", message);
 
-      // socket.to(idRoom).emit("newMessage", message);
-      // io.sockets.in(idRoom).emit("updateMessage", message);
+      // io.sockets
+      //   .in(idRoom)
+      //   .emit("updateMessage", { message, idRoom: data.room });
       io.emit("updateMessage", { message, idRoom: data.room });
+      console.log(socket.adapter.rooms);
     });
     // });
 
-    // console.log(socket.adapter.rooms);
     socket.on("disconnect", () => {
       console.log("user disconnect ", socket.id);
       const isoffline = usersModel.findOneAndUpdate(

@@ -35,10 +35,19 @@ module.exports.register = async (req, res) => {
   try {
     const { firstName, lastName, email, nickName, password, gender } = req.body;
     const existedUser = await users.findOne({
-      $or: [{ email: email }, { name: nickName }],
+      // $or: [{ email: email }, { name: nickName }],
+      name: nickName,
     });
 
     if (existedUser) {
+      return res.status(400).json({
+        error: "nickName đã được sử dụng",
+      });
+    }
+
+    const existedEmail = await users.findOne({ email: email });
+
+    if (existedEmail) {
       return res.status(400).json({
         error: "Email đã được sử dụng",
       });

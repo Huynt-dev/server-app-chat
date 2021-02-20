@@ -19,6 +19,7 @@ const usersRouter = require("./src/routers/usersRouter");
 const routerAuth = require("./src/routers/authRouter");
 const roomRouter = require("./src/routers/roomRouter");
 const routerSearch = require("./src/routers/routerSearch");
+const routerProfile = require("./src/routers/routerProfile");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -41,6 +42,7 @@ app.use("/auth", routerAuth);
 app.use("/users", usersRouter);
 app.use("/room", roomRouter);
 app.use("/search", routerSearch);
+app.use("/profile", routerProfile);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");

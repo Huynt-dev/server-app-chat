@@ -24,12 +24,42 @@ module.exports.findUserInRoom = async function (req, res) {
     if (room == null) {
       room = await roomModel.create({
         users: [idUser, req.user._id],
-        who: "aaa",
-        lastMessage: "aaa",
+        who: "",
+        lastMessage: "",
       });
     }
 
     res.status(200).json({ room });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.changeInfo = async function (req, res) {
+  try {
+    const { idUser } = req.params;
+    const { data } = req.body;
+
+    console.log(data.firstName);
+    // await usersModel.findOneAndUpdate(
+    //   { _id: idUser },
+    //   { first_name: data.firstName, last_name: data.LastName }
+    // );
+    if (req.user._id) {
+      await usersModel.updateMany(
+        // console.log(data.message),
+        { _id: req.user._id },
+        { $set: { first_name: data.firstName, last_name: data.lastName } },
+        { upsert: true }
+      );
+
+      res.status(200).json({ data });
+    }
+
+    // if (idUser === JSON.stringify(req.user._id)) {
+
+    // }
+    // res.status(400).json("error");
   } catch (error) {
     console.log(error);
   }
