@@ -5,4 +5,6 @@ const isAuth = require("../middleware/isAuth");
 
 profile.post("/i", isAuth, usersController.changeInfo);
 
+profile.post("/p", isAuth, usersController.changePass);
+
 module.exports = profile;

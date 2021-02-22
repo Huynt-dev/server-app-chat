@@ -25,19 +25,6 @@ const connect = (io) => {
       { _id: socket.user._id },
       { isOnline: true }
     );
-    // socket.on("auth", async (token) => {
-    //   const user = await jwt.verify(token, process.env.JWT_KEY);
-    //   socket.join(user._id);
-    //   socket.currentUserId = user._id;
-    // });
-
-    // .to(toUserId)
-    // .to(socket.currentUserId)
-
-    // socket.on("Join-room", (idRoom) => {
-    //   // socket.leave(!idRoom);
-    //   socket.join(idRoom);
-    //   console.log(socket.adapter.rooms);
 
     socket.on("sendMessage", async (data) => {
       console.log(data);
@@ -50,7 +37,6 @@ const connect = (io) => {
         .execPopulate();
 
       await roomModel.updateMany(
-        // console.log(data.message),
         { _id: data.room },
         { $set: { who: message.user.name, lastMessage: data.message } },
         { upsert: true }
@@ -62,15 +48,13 @@ const connect = (io) => {
       //   new: true,
       //   upsert: true,
       // });
-      console.log("alo", message.socketId);
-      // socket.join(message.user._id);
-      io.to().emit("newMessage", message);
 
-      // io.sockets
-      //   .in(idRoom)
-      //   .emit("updateMessage", { message, idRoom: data.room });
-      io.emit("updateMessage", { message, idRoom: data.room });
-      console.log(socket.adapter.rooms);
+      // socket.join(message.user._id);
+      io.to(data.toUser).emit("newMessage", message);
+
+      io.to(socket.user._id)
+        .to(data.toUser)
+        .emit("updateMessage", { message, idRoom: data.room });
     });
     // });
 

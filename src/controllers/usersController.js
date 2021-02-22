@@ -1,5 +1,6 @@
 const usersModel = require("../models/usersModel");
 const roomModel = require("../models/roomModel");
+const bcrypt = require("bcrypt");
 
 module.exports.users = async function (req, res) {
   var dataUsers = await usersModel
@@ -37,14 +38,8 @@ module.exports.findUserInRoom = async function (req, res) {
 
 module.exports.changeInfo = async function (req, res) {
   try {
-    const { idUser } = req.params;
     const { data } = req.body;
 
-    console.log(data.firstName);
-    // await usersModel.findOneAndUpdate(
-    //   { _id: idUser },
-    //   { first_name: data.firstName, last_name: data.LastName }
-    // );
     if (req.user._id) {
       await usersModel.updateMany(
         // console.log(data.message),
@@ -55,11 +50,48 @@ module.exports.changeInfo = async function (req, res) {
 
       res.status(200).json({ data });
     }
+  } catch (error) {
+    res.status(400).json("error");
+    console.log(error);
+  }
+};
 
-    // if (idUser === JSON.stringify(req.user._id)) {
+module.exports.changePass = async function (req, res) {
+  try {
+    const { data } = req.body;
 
-    // }
-    // res.status(400).json("error");
+    console.log(data.ConfirmPassword);
+
+    if (!req.user._id) {
+      return res.status(401).json({ error: "Password error" });
+    }
+
+    const user = await usersModel.findOne({ _id: req.user._id }).lean();
+    // console.log(user);
+    if (!user) {
+      return res.status(401).json({ error: "Email is invalid" });
+    }
+
+    const isCorrectPassword = await bcrypt.compare(
+      data.OldPassword,
+      user.password
+    );
+
+    if (!isCorrectPassword) {
+      return res.status(401).json({ error: "Password is invalid" });
+    }
+
+    const hashPassword = await bcrypt.hash(data.ConfirmPassword, 10);
+    console.log(isCorrectPassword);
+    console.log(hashPassword);
+    await usersModel.updateMany(
+      // console.log(data.message),
+      { _id: req.user._id },
+      { $set: { password: hashPassword } },
+      { upsert: true }
+    );
+
+    res.status(200).json("ok");
   } catch (error) {
     console.log(error);
   }

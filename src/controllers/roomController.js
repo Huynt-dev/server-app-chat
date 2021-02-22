@@ -13,10 +13,8 @@ module.exports.findMessageInRoom = async function (req, res) {
   try {
     const { idRoom } = req.params;
 
-    var message = await messageModel
-      .find({ room: idRoom })
-      // .sort({ createdAt: -1 })
-      .populate("user");
+    var message = await messageModel.find({ room: idRoom }).populate("user");
+    // .sort({ createdAt: -1 })
     // .limit(10);
     res.status(200).json({ message });
   } catch (error) {

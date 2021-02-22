@@ -14,6 +14,10 @@ const messagesSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
     },
+    toUser: {
+      type: String,
+    },
+
     expire_at: { type: Date, default: Date.now, expires: 3600 },
   },
 
