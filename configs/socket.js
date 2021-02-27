@@ -8,7 +8,6 @@ const connect = (io) => {
       const token = socket.handshake.query.token;
       const payload = await jwt.verify(token, process.env.JWT_KEY);
       socket.user = payload;
-      console.log("socket.user", socket.user);
       socket.join(socket.user._id);
       next();
     } catch (e) {
@@ -17,18 +16,26 @@ const connect = (io) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("---------------------");
-
-    // socket.emit("userBecomeOnline", socket.user._id);
-    console.log("new connection: ", socket.id);
-    const isOnline = usersModel.findOneAndUpdate(
+    usersModel.findOneAndUpdate(
       { _id: socket.user._id },
-      { isOnline: true }
+      { $set: { isOnline: true } },
+      { new: true },
+      (error) => {
+        if (error) {
+          console.log(error);
+        }
+      }
     );
 
     socket.on("sendMessage", async (data) => {
       console.log(data);
-      const message = await messageModel.create(data);
+      const message = await messageModel.create({
+        room: data.room,
+        user: data.user,
+        message: data.message,
+        toUser: data.toUser,
+      });
+
       await message
         .populate({
           path: "user",
@@ -42,31 +49,25 @@ const connect = (io) => {
         { upsert: true }
       );
 
-      // await roomModel.findAndModify({
-      //   query: { _id: data.room },
-      //   update: { $set: { who: message.user.name, lastMessage: data.message } },
-      //   new: true,
-      //   upsert: true,
-      // });
-
-      // socket.join(message.user._id);
       io.to(data.toUser).emit("newMessage", message);
 
       io.to(socket.user._id)
         .to(data.toUser)
         .emit("updateMessage", { message, idRoom: data.room });
     });
-    // });
 
     socket.on("disconnect", () => {
-      console.log("user disconnect ", socket.id);
-      const isoffline = usersModel.findOneAndUpdate(
+      usersModel.findOneAndUpdate(
         { _id: socket.user._id },
-        { isOnline: false }
+        { $set: { isOnline: false } },
+        { new: true },
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        }
       );
     });
-
-    // .emit("tokenSuccess", { msg: "Token success!!" });
   });
 };
 

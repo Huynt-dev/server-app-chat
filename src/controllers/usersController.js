@@ -32,7 +32,7 @@ module.exports.findUserInRoom = async function (req, res) {
 
     res.status(200).json({ room });
   } catch (error) {
-    console.log(error);
+    res.status(400).json("error");
   }
 };
 
@@ -42,7 +42,6 @@ module.exports.changeInfo = async function (req, res) {
 
     if (req.user._id) {
       await usersModel.updateMany(
-        // console.log(data.message),
         { _id: req.user._id },
         { $set: { first_name: data.firstName, last_name: data.lastName } },
         { upsert: true }
@@ -52,7 +51,6 @@ module.exports.changeInfo = async function (req, res) {
     }
   } catch (error) {
     res.status(400).json("error");
-    console.log(error);
   }
 };
 
@@ -60,14 +58,12 @@ module.exports.changePass = async function (req, res) {
   try {
     const { data } = req.body;
 
-    console.log(data.ConfirmPassword);
-
     if (!req.user._id) {
       return res.status(401).json({ error: "Password error" });
     }
 
     const user = await usersModel.findOne({ _id: req.user._id }).lean();
-    // console.log(user);
+
     if (!user) {
       return res.status(401).json({ error: "Email is invalid" });
     }
@@ -82,10 +78,8 @@ module.exports.changePass = async function (req, res) {
     }
 
     const hashPassword = await bcrypt.hash(data.ConfirmPassword, 10);
-    console.log(isCorrectPassword);
-    console.log(hashPassword);
+
     await usersModel.updateMany(
-      // console.log(data.message),
       { _id: req.user._id },
       { $set: { password: hashPassword } },
       { upsert: true }
@@ -93,6 +87,6 @@ module.exports.changePass = async function (req, res) {
 
     res.status(200).json("ok");
   } catch (error) {
-    console.log(error);
+    res.status(400).json("error");
   }
 };

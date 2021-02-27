@@ -6,7 +6,6 @@ module.exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await users.findOne({ email }).lean();
-    // console.log(user);
     if (!user) {
       return res.status(401).json({ error: "Email is invalid" });
     }
@@ -35,21 +34,13 @@ module.exports.register = async (req, res) => {
   try {
     const { firstName, lastName, email, nickName, password, gender } = req.body;
     const existedUser = await users.findOne({
-      // $or: [{ email: email }, { name: nickName }],
+      $or: [{ email: email }, { name: nickName }],
       name: nickName,
     });
 
     if (existedUser) {
       return res.status(400).json({
         error: "nickName đã được sử dụng",
-      });
-    }
-
-    const existedEmail = await users.findOne({ email: email });
-
-    if (existedEmail) {
-      return res.status(400).json({
-        error: "Email đã được sử dụng",
       });
     }
 

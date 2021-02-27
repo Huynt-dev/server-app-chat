@@ -17,6 +17,10 @@ const messagesSchema = new mongoose.Schema(
     toUser: {
       type: String,
     },
+    isSeen: {
+      type: Boolean,
+      default: false,
+    },
 
     expire_at: { type: Date, default: Date.now, expires: 3600 },
   },
