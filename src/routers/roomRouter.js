@@ -5,6 +5,6 @@ const isAuth = require("../middleware/isAuth");
 
 room.get("/", isAuth, roomController.rooms);
 
-room.get("/:idRoom", isAuth, roomController.findMessageInRoom);
+room.get("/:idRoom/:toUser", isAuth, roomController.findMessageInRoom);
 
 module.exports = room;

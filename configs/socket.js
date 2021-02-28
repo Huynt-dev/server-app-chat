@@ -28,7 +28,6 @@ const connect = (io) => {
     );
 
     socket.on("sendMessage", async (data) => {
-      console.log(data);
       const message = await messageModel.create({
         room: data.room,
         user: data.user,
