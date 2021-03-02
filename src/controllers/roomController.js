@@ -16,9 +16,10 @@ module.exports.findMessageInRoom = async function (req, res) {
   try {
     const { idRoom, toUser } = req.params;
     var message = await messageModel.find({ room: idRoom }).populate("user");
-    await messageModel.updateMany({ user: toUser }, { $set: { isSeen: true } });
     // .sort({ createdAt: -1 })
     // .limit(10);
+    await messageModel.updateMany({ user: toUser }, { $set: { isSeen: true } });
+
     res.status(200).json({ message });
   } catch (error) {
     res.status(400).json({ error });
