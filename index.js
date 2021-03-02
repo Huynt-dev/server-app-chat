@@ -32,10 +32,9 @@ mongoose.connect(process.env.CONNECT_DATA, {
 });
 
 socket.connect(io);
-// connect to socket
 
 app.get("/", function (req, res) {
-  res.send("Hello World!");
+  res.send("Hello HuyNT!");
 });
 
 app.use("/auth", routerAuth);
@@ -46,7 +45,7 @@ app.use("/profile", routerProfile);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");
-  server.listen(process.env.PORT, () => {
+  server.listen(process.env.PORT || 9999, () => {
     console.log("Server is running port " + process.env.PORT);
   });
 });
