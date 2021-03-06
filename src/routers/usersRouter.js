@@ -7,4 +7,6 @@ users.get("/", isAuth, userController.users);
 
 users.get("/:idUser", isAuth, userController.findUserInRoom);
 
+users.get("/i/:idUser", isAuth, userController.showUser);
+
 module.exports = users;

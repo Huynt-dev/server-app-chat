@@ -13,6 +13,18 @@ module.exports.users = async function (req, res) {
   res.status(200).json({ dataUsers });
 };
 
+module.exports.showUser = async function (req, res) {
+  try {
+    const { idUser } = req.params;
+    var userInfo = await usersModel
+      .findOne({ _id: idUser })
+      .select("name avatar email isOnline");
+    res.status(200).json({ userInfo });
+  } catch (error) {
+    res.status(400).json("error");
+  }
+};
+
 module.exports.findUserInRoom = async function (req, res) {
   try {
     const { idUser } = req.params;
