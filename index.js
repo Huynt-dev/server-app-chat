@@ -5,7 +5,6 @@ const express = require("express");
 const http = require("http");
 const mongoose = require("mongoose");
 const app = express();
-const jwt = require("jsonwebtoken");
 const socket = require("./configs/socket");
 
 const server = http.createServer(app);
@@ -45,7 +44,7 @@ app.use("/profile", routerProfile);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");
-  server.listen(process.env.PORT || 9999, () => {
+  server.listen(process.env.PORT, () => {
     console.log("Server is running port " + process.env.PORT);
   });
 });
