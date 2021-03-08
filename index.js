@@ -44,7 +44,7 @@ app.use("/profile", routerProfile);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected database !!!!!");
-  server.listen(process.env.PORT, () => {
+  server.listen(process.env.PORT || 9999, () => {
     console.log("Server is running port " + process.env.PORT);
   });
 });
