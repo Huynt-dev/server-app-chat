@@ -10,9 +10,7 @@ const connect = (io) => {
       socket.user = payload;
       socket.join(socket.user._id);
       next();
-    } catch (e) {
-      console.log("token error");
-    }
+    } catch (e) {}
   });
 
   io.on("connection", (socket) => {
